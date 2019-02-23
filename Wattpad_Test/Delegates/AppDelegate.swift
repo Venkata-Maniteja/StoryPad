@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  Wattpad_Test
 //
-//  Created by Rupika Sompalli on 05/02/19.
+//  Created by " on 05/02/19.
 //  Copyright © 2019 Venkata. All rights reserved.
 //
 
