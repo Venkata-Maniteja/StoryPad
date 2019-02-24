@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  CoverPage
 //
-//  Created by Rupika Sompalli on 12/02/19.
+//  Created by Venkata Nandamuri on 12/02/19.
 //  Copyright © 2019 Venkata. All rights reserved.
 //
 
@@ -30,8 +30,27 @@ class CoverViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        //tblView.addSubview(headerView!)
-         tblView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        customiseNavBar()
+        prepareListView()
+        addHeaderView()
+        addAvatarView()
+        
+    }
+    
+    private func prepareListView(){
+        tblView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tblView.backgroundColor = UIColor.clear
+        tblView.contentInset = UIEdgeInsets(top: CGFloat(headerHeight), left: 0, bottom: 100, right: 0)
+    }
+    
+    private func customiseNavBar(){
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.isTranslucent = true
+    }
+    
+    private func addHeaderView(){
         headerView = UIImageView()
         if let coverImg = story?.coverImg{
             headerView?.image = coverImg
@@ -48,16 +67,9 @@ class CoverViewController: UIViewController {
         blurV?.backgroundColor = UIColor.orange
         view.addSubview(blurV!)
         view.addSubview(headerView!)
-        
-        navigationController?.setNavigationBarHidden(false, animated: true)
-        
-        
-        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        navigationController?.navigationBar.shadowImage = UIImage()
-        navigationController?.navigationBar.isTranslucent = true
-
-        
-        
+    }
+    
+    private func addAvatarView(){
         avatarView = UIView(frame: avatarFrame)
         let imgV = UIImageView(frame: avatarView!.bounds)
         imgV.contentMode = .scaleAspectFit
@@ -66,7 +78,7 @@ class CoverViewController: UIViewController {
         imgV.layer.cornerRadius = imgV.frame.size.width/2
         
         if let userIcon = story?.user?.avatar{
-           loadAsyncImg(userIcon)
+            loadAsyncImg(userIcon)
         }
         
         avatarView?.layer.borderColor = UIColor.orange.cgColor
@@ -78,15 +90,7 @@ class CoverViewController: UIViewController {
         avatarView?.layer.shadowRadius = 4.0
         avatarView?.addSubview(imgV)
         view.addSubview(avatarView!)
-        
-     
-        tblView.backgroundColor = UIColor.clear
         view.bringSubviewToFront(avatarView!)
-        
-        
-        tblView.contentInset = UIEdgeInsets(top: CGFloat(headerHeight), left: 0, bottom: 100, right: 0)
-        
-        
     }
     
     func updateHeaderView(){
@@ -105,28 +109,15 @@ class CoverViewController: UIViewController {
         guard let url = URL(string:imgURL) else{
             return
         }
-        
-        DispatchQueue.global().async {
-            
-            let task = URLSession.shared.dataTask(with: url) { (responseData, responseUrl, error) -> Void in
-                // if responseData is not null...
-                if let data = responseData {
-                    // execute in UI thread
-                    DispatchQueue.main.async {
-                        let img = UIImage(data: data)
-                        let imgV = self.avatarView?.subviews[0] as! UIImageView
-                        imgV.image = img
-                    }
-                }
-                
+        let downloader = IconDownloader(url)
+        downloader.completionHandler = { img in
+            DispatchQueue.main.async {
+                let imgV = self.avatarView?.subviews[0] as! UIImageView
+                imgV.image = img
             }
-            // Run task
-            task.resume()
-            
         }
-        
-        
-        
+        downloader.startDownload()
+       
     }
     
 }
@@ -151,16 +142,19 @@ extension CoverViewController : UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        
-            cell.textLabel?.text = loveArray[indexPath.row]
-            cell.textLabel?.numberOfLines = 0
-            cell.textLabel?.lineBreakMode = .byWordWrapping
-            cell.textLabel?.textColor = UIColor.darkGray//UIColor(red: 1.0, green: 0.22, blue: 0.58, alpha: 1.0)//colorWithRed:1.00 green:0.22 blue:0.58 alpha:1.0
-            cell.textLabel?.font = UIFont(name: "Cochin-Italic", size: 16)
-        
-        cell.backgroundColor = UIColor.clear
+        customiseCell(cell, indexPath)
         return cell
         
+    }
+    
+    private func customiseCell(_ cell : UITableViewCell,_ indexPath : IndexPath){
+        cell.textLabel?.text = loveArray[indexPath.row]
+        cell.textLabel?.numberOfLines = 0
+        cell.textLabel?.lineBreakMode = .byWordWrapping
+        cell.textLabel?.textColor = UIColor.darkGray//UIColor(red: 1.0, green: 0.22, blue: 0.58, alpha: 1.0)//colorWithRed:1.00 green:0.22 blue:0.58 alpha:1.0
+        cell.textLabel?.font = UIFont(name: "Cochin-Italic", size: 16)
+        
+        cell.backgroundColor = UIColor.clear
     }
     
     
@@ -171,10 +165,7 @@ extension CoverViewController : UITableViewDelegate, UITableViewDataSource{
 extension CoverViewController : UIScrollViewDelegate{
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
         updateHeaderView()
-        
-        
     }
     
     func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {

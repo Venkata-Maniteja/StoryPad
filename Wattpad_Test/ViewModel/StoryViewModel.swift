@@ -11,41 +11,99 @@
 import Foundation
 import UIKit
 
+/**
+ This protocol handles the data download communication between ViewController and its ViewModel
+ 
+ */
 protocol StoryViewModelDelegate: class {
-  func onFetchCompleted(with stories: [Story]?)
-  func onFetchFailed(with reason: String)
-  func onImageDownloaded(_ img : UIImage, _ indPath : IndexPath)
-  func onStoriesFiltered()
+    
+    /**
+     This method is called when stories are downloaded.
+     
+     - Parameter stories: An array of Story items
+     */
+    func onFetchCompleted(with stories: [Story]?)
+    
+    /**
+     This method is called when story fetch is failed
+     
+     - Parameter reason: Localised error message
+     */
+    func onFetchFailed(with reason: String)
+    
+    /**
+     This method is called when cover image is downloaded for a story item.
+     
+     - Parameter img: Downloaded cover image for story
+     - Parameter indPath: Indexpath for the story item on thelistview
+     */
+    func onImageDownloaded(_ img : UIImage, _ indPath : IndexPath)
+    
+    /**
+     This method is called when user is searching for stories using searchbar
+     
+     */
+    func onStoriesFiltered()
 }
 
 final class StoryViewModel {
-  private weak var delegate: StoryViewModelDelegate?
-  
-  private var stories: [Story] = []
+    private weak var delegate: StoryViewModelDelegate?
     
-  private var filteredStories : [Story] = []
-  private var searchInProgress = false
+    private var stories: [Story] = []
     
-  private var imageDownloadsInProgress : [IndexPath : IconDownloader]?
-
+    private var filteredStories : [Story] = []
+    private var searchInProgress = false
     
-  private var total = 0
-  private var isFetchInProgress = false
-  
-  let manager = StoryManager()
+    /**
+     This var is used for storing the image cache.
+     This is used to track the images that needs to be downloaded
+     
+     */
+    private var imageDownloadsInProgress : [IndexPath : IconDownloader]?
     
+    
+    private var total = 0
+    private var isFetchInProgress = false
+    
+    private let session = URLSession()
+    let manager : StoryManager
+    
+    /**
+     This value represents the page number used in making network request.
+     This is for pagination.
+     
+     */
     private var currentPage : Int{
         return manager.storiesOffset + totalCount
     }
-  
-  init(delegate: StoryViewModelDelegate) {
-    self.delegate = delegate
-  }
-  
-  var totalCount: Int {
-    return 27 //This is the total items returned by the wattpad api
-  }
     
+    
+    /**
+     This method initialises the StoryViewModel
+     
+     - Parameter delegate: The delegate for the view model
+     - Returns : Initialised view model class object
+     */
+    init(delegate: StoryViewModelDelegate) {
+        self.delegate = delegate
+        let session = URLSession.shared
+        manager = StoryManager(session)
+        
+    }
+    
+    /**
+     This value represents the total number of stories that willcome from the servrer.
+     
+     */
+    var totalCount: Int {
+        return 27 //This is the total items returned by the wattpad api
+    }
+    
+    
+    /**
+     This value represents the current count of stories that are downloaded.
+     
+     */
     var currentCount: Int {
         if searchInProgress == true{
             return filteredStories.count
@@ -53,58 +111,67 @@ final class StoryViewModel {
         return stories.count
     }
     
-    var filterMode : Bool{
-        return searchInProgress
-    }
-  
-  func story(at index: Int) -> Story {
-    if searchInProgress == true{
-        return filteredStories[index]
-    }
-    return stories[index]
-  }
-  
-  func fetchStories() {
-   
-    guard !isFetchInProgress else {
-      return
-    }
     
-    isFetchInProgress = true
-    
-    guard let url = manager.buildURL() else{
-        return
-    }
-    let request = URLRequest(url: url)
-    manager.fetchStories(with: request, page: currentPage) { result in
+    /**
+     This method returns the story item from datasource.
      
-        switch result {
-          
-          case .failure(let error):
-                                            DispatchQueue.main.async {
-                                              self.isFetchInProgress = false
-                                              self.delegate?.onFetchFailed(with: error.reason)
-                                            }
-          case .success(let response):
-                                            DispatchQueue.main.async {
-                                              self.isFetchInProgress = false
-                                              
-                                              self.stories.append(contentsOf:response.stories!)
-                                              
-                                              if self.stories.isEmpty == true {
-                                                self.delegate?.onFetchCompleted(with: .none)
-                                              } else {
-                                                self.delegate?.onFetchCompleted(with: response.stories)
-                                              }
-                                            }
-      }
+     - Parameter index: The index of story item
+     - Returns : Story item from the array
+     */
+    func story(at index: Int) -> Story {
+        if searchInProgress == true{
+            return filteredStories[index]
+        }
+        return stories[index]
     }
-  }
     
     
-    // -------------------------------------------------------------------------------
-    //    terminateAllDownloads
-    // -------------------------------------------------------------------------------
+    /**
+     This method initiates the story fetch
+     
+     */
+    func fetchStories() {
+        
+        guard !isFetchInProgress else {
+            return
+        }
+        
+        isFetchInProgress = true
+        
+        guard let url = manager.buildURL() else{
+            return
+        }
+        let request = URLRequest(url: url)
+        manager.fetchStories(with: request, page: currentPage) { result in
+            
+            switch result {
+                
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.isFetchInProgress = false
+                    self.delegate?.onFetchFailed(with: error.reason)
+                }
+            case .success(let response):
+                DispatchQueue.main.async {
+                    self.isFetchInProgress = false
+                    
+                    self.stories.append(contentsOf:response.stories!)
+                    
+                    if self.stories.isEmpty == true {
+                        self.delegate?.onFetchCompleted(with: .none)
+                    } else {
+                        self.delegate?.onFetchCompleted(with: response.stories)
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    /**
+     This method is used to cancell all downloads that are in progress.
+     
+     */
     func terminateAllDownloads()
     {
         // terminate all pending download connections
@@ -115,7 +182,13 @@ final class StoryViewModel {
         }
     }
     
-     func startIconDownload(_ iconURL : String, indPath : IndexPath){
+    /**
+     This method downloads the icon for the story
+     
+     - Parameter iconURL: The icon url for story cover image
+     - Parameter indPath: The indexpath for story item in the list view
+     */
+    func startIconDownload(_ iconURL : String, indPath : IndexPath){
         
         if (imageDownloadsInProgress?[indPath]) != nil{
             //wait for the downloader to finish
@@ -141,12 +214,18 @@ final class StoryViewModel {
         
     }
     
-   private func updateDataSource(_ img : UIImage,_ indPath : IndexPath){
+    /**
+     This method updates the data source with the image that is downloaded
+     
+     - Parameter img: The image that is downloaded
+     - Parameter indPath: The indexpath for story item in the list view
+     */
+    private func updateDataSource(_ img : UIImage,_ indPath : IndexPath){
         
         if searchInProgress == false{
             var story = stories[indPath.row]
-             story.coverImg = img
-             stories[indPath.row] = story
+            story.coverImg = img
+            stories[indPath.row] = story
         }else{
             var story = filteredStories[indPath.row]
             story.coverImg = img
@@ -155,6 +234,12 @@ final class StoryViewModel {
         
     }
     
+    
+    /**
+     This method gets called when user types in the search bar
+     
+     - Parameter searchText: The text in the search bar
+     */
     func textDidChange(_ searchText : String){
         
         if searchText.count > 0{
@@ -171,11 +256,15 @@ final class StoryViewModel {
         
     }
     
+    /**
+     This method gets called when user search bar did end editing
+     
+     */
     func searchDidStop(){
         searchInProgress = false
         self.delegate?.onStoriesFiltered()
         print(stories.count)
     }
- 
-  
+    
+    
 }

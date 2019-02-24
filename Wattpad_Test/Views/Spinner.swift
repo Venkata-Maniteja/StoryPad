@@ -2,7 +2,7 @@
 //  Spinner.swift
 //  Wattpad_Test
 //
-//  Created by Rupika Sompalli on 23/02/19.
+//  Created by Venkata Nandamuri on 23/02/19.
 //  Copyright © 2019 Venkata. All rights reserved.
 //
 
@@ -16,6 +16,15 @@ class Spinner: UIView {
     override func awakeFromNib() {
         super.awakeFromNib()
         
+        addRotation()
+        
+    }
+    
+    /**
+     This method adds the rotation animation for the spinner
+     
+     */
+    private func addRotation(){
         //add rotation
         let rotation = CABasicAnimation(keyPath: "transform.rotation")
         rotation.fromValue = 0

@@ -2,7 +2,7 @@
 //  IconDownloader.swift
 //  Wattpad_Test
 //
-//  Created by Rupika Sompalli on 23/02/19.
+//  Created by Venkata Nandamuri on 23/02/19.
 //  Copyright © 2019 Venkata. All rights reserved.
 //
 
@@ -14,11 +14,22 @@ class IconDownloader: NSObject {
     var completionHandler : ((UIImage) -> Void)?
     var session : URLSessionDataTask?
     
+    /**
+     This method initialise the IconDownloader class
+     
+     - Returns: Initialised IconDownloader class
+     - Parameter icnURL: A url for downloading the cover Image for story
+     */
     init(_ icnURL : URL) {
         self.iconURL = icnURL
         self.completionHandler = {_ in}
     }
     
+    /**
+     This method starts downloading the image.
+     Once the image is downloaded, the image willbe sent using the completion handler.
+     
+     */
     func startDownload(){
         
         DispatchQueue.global().async {
@@ -47,6 +58,11 @@ class IconDownloader: NSObject {
         
     }
     
+    
+    /**
+     This method cancels the download that is started on the session param.
+     
+     */
     func cancelDownload(){
         self.session?.cancel()
         self.session = nil

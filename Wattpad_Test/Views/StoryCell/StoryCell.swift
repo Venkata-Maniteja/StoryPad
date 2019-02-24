@@ -2,7 +2,7 @@
 //  StoryCell.swift
 //  Wattpad_Test
 //
-//  Created by Rupika Sompalli on 22/02/19.
+//  Created by Venkata Nandamuri on 22/02/19.
 //  Copyright © 2019 Venkata. All rights reserved.
 //
 

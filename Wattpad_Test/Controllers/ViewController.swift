@@ -66,12 +66,11 @@ class ViewController: UIViewController,AlertDisplayer {
         viewModel.terminateAllDownloads()
     }
     
-    
-    // -------------------------------------------------------------------------------
-    //    loadImagesForOnscreenRows
-    //  This method is used in case the user scrolled into a set of cells that don't
-    //  have their cover icons yet.
-    // -------------------------------------------------------------------------------
+
+    /**
+     This method is used in case the user scrolled into a set of cells that don't
+     have their cover icons yet.
+     */
     func loadImagesForOnscreenRows()
     {
         if viewModel.currentCount > 0
@@ -173,7 +172,6 @@ extension ViewController : UITableViewDelegate,UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-       
         return viewModel.totalCount
     }
     
@@ -226,6 +224,14 @@ extension ViewController: UITableViewDataSourcePrefetching {
 
 private extension ViewController {
    
+    /**
+     This method takes the indexPath and checks if it is already loaded on screen
+     or not by checking the indexPath with viewModel currentCount
+     
+     - Returns: true if cell is not loaded completely else false
+     - Parameter indexPath: The indexPath of the cell
+     
+     */
     func isLoadingCell(for indexPath: IndexPath) -> Bool {
         return indexPath.row >= viewModel.currentCount
     }
