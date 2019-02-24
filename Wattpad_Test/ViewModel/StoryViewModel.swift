@@ -43,6 +43,22 @@ final class StoryViewModel {
         return manager.storiesOffset + totalCount
     }
     
+    /**
+     This value represents is search modes is enabled or not.
+     
+     */
+     var isSearchInProgress : Bool{
+        return searchInProgress
+     }
+    
+    /**
+     This value represents count of filtered stories
+     
+     */
+    var filterCount : Int{
+        return filteredStories.count
+    }
+    
     
     /**
      This method initialises the StoryViewModel
@@ -71,9 +87,9 @@ final class StoryViewModel {
      
      */
     var currentCount: Int {
-        if searchInProgress == true{
-            return filteredStories.count
-        }
+//        if searchInProgress == true{
+//            return filteredStories.count
+//        }
         return stories.count
     }
     
@@ -210,14 +226,14 @@ final class StoryViewModel {
         
         if searchText.count > 0{
             searchInProgress = true
-            
+            filteredStories.removeAll()
             filteredStories = stories.filter {
                 $0.title?.lowercased().contains(searchText.lowercased()) ?? false
             }
-            print("search text is \(searchText)")
+            print("search text is \(searchText), filter count : \(filteredStories.count)")
             self.delegate?.onStoriesFiltered()
         }else{
-            searchDidStop()
+            searchDidStop(searchText)
         }
         
     }
@@ -226,8 +242,11 @@ final class StoryViewModel {
      This method gets called when user search bar did end editing
      
      */
-    func searchDidStop(){
-        searchInProgress = false
+    func searchDidStop(_ searchText : String){
+        
+        if searchText.isEmpty {
+            searchInProgress = false
+        }
         self.delegate?.onStoriesFiltered()
         print(stories.count)
     }

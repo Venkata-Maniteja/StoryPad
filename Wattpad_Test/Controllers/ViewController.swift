@@ -154,11 +154,16 @@ extension ViewController : UISearchBarDelegate{
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        viewModel.searchDidStop()
+        viewModel.searchDidStop(searchBar.text ?? "")
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        viewModel.searchDidStop()
+        viewModel.searchDidStop(searchBar.text ?? "")
+        searchBar.resignFirstResponder()
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
     }
    
    
@@ -172,6 +177,9 @@ extension ViewController : UITableViewDelegate,UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if viewModel.isSearchInProgress{
+            return viewModel.filterCount
+        }
         return viewModel.totalCount
     }
     
