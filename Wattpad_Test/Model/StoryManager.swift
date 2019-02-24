@@ -56,7 +56,7 @@ class StoryManager {
         
         session.dataTask(with: request, completionHandler: { data, response, error in
             
-            guard let httpResponse = response as? HTTPURLResponse,httpResponse.hasSuccessStatusCode,let data = data else {
+            guard let httpResponse = response as? HTTPURLResponse,httpResponse.hasSuccessStatusCode, httpResponse.hasValidContentType,let data = data else {
                 completion(Result.failure(DataResponseError.network))
                 return
             }

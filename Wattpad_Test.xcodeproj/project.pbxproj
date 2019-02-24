@@ -28,6 +28,7 @@
 		375A92CA22221CAD008B6625 /* StoryPad_UITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375A92C922221CAD008B6625 /* StoryPad_UITest.swift */; };
 		375A92D322222118008B6625 /* URLTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375A92D222222118008B6625 /* URLTest.swift */; };
 		375A92D52222216D008B6625 /* StoryDownloadTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375A92D42222216D008B6625 /* StoryDownloadTest.swift */; };
+		375A92D722225000008B6625 /* StoryViewModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375A92D622225000008B6625 /* StoryViewModelDelegate.swift */; };
 		37FED41422209361001308C1 /* StoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FED41222209361001308C1 /* StoryCell.swift */; };
 		37FED41522209361001308C1 /* StoryCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 37FED41322209361001308C1 /* StoryCell.xib */; };
 		37FED4182220A5E3001308C1 /* CoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FED4172220A5E2001308C1 /* CoverViewController.swift */; };
@@ -79,6 +80,7 @@
 		375A92D122222117008B6625 /* StoryPad_UnitTest-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "StoryPad_UnitTest-Bridging-Header.h"; sourceTree = "<group>"; };
 		375A92D222222118008B6625 /* URLTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLTest.swift; sourceTree = "<group>"; };
 		375A92D42222216D008B6625 /* StoryDownloadTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryDownloadTest.swift; sourceTree = "<group>"; };
+		375A92D622225000008B6625 /* StoryViewModelDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryViewModelDelegate.swift; sourceTree = "<group>"; };
 		37FED41222209361001308C1 /* StoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryCell.swift; sourceTree = "<group>"; };
 		37FED41322209361001308C1 /* StoryCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StoryCell.xib; sourceTree = "<group>"; };
 		37FED4172220A5E2001308C1 /* CoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverViewController.swift; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				373555822209EC46005961EC /* AppDelegate.swift */,
+				375A92D622225000008B6625 /* StoryViewModelDelegate.swift */,
 			);
 			path = Delegates;
 			sourceTree = "<group>";
@@ -385,6 +388,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				37FED4182220A5E3001308C1 /* CoverViewController.swift in Sources */,
+				375A92D722225000008B6625 /* StoryViewModelDelegate.swift in Sources */,
 				37314CEA22219BEB00E66700 /* IconDownloader.swift in Sources */,
 				375A92B42221F76D008B6625 /* UIView+Extension.swift in Sources */,
 				375A92A92221DB55008B6625 /* HTTPURLResponse.swift in Sources */,
