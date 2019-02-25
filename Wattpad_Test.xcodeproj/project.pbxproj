@@ -210,6 +210,16 @@
 			path = StoryPad_UITest;
 			sourceTree = "<group>";
 		};
+		37B63D6622235E68002DBD48 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				375A92A62221DB33008B6625 /* DataResponseError.swift */,
+				375A92A82221DB55008B6625 /* HTTPURLResponse.swift */,
+				375A92A42221DB0D008B6625 /* Result.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
 		37FED40F2220908F001308C1 /* Delegates */ = {
 			isa = PBXGroup;
 			children = (
@@ -231,10 +241,8 @@
 		37FED411222090A1001308C1 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				375A92A62221DB33008B6625 /* DataResponseError.swift */,
-				375A92A82221DB55008B6625 /* HTTPURLResponse.swift */,
+				37B63D6622235E68002DBD48 /* Networking */,
 				373555942209EDBD005961EC /* StoryManager.swift */,
-				375A92A42221DB0D008B6625 /* Result.swift */,
 				373555962209EE90005961EC /* Story.swift */,
 				37314CE922219BEB00E66700 /* IconDownloader.swift */,
 			);

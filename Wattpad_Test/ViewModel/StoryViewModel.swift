@@ -70,7 +70,6 @@ final class StoryViewModel {
         self.delegate = delegate
         let session = URLSession.shared
         manager = StoryManager(session)
-        
     }
     
     /**
